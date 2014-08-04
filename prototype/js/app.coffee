@@ -8,11 +8,11 @@ module.exports = class App extends Backbone.View
   initialize: (options) ->
     throw 'Must pass options.entities, an Entities Collection' if !options.entities
     @entities = options.entities
-    @children = []
+    @children = {}
 
   clearChildren: ->
-    @children.forEach((c) => c.remove())
-    @children = []
+    c.remove() for __, c of @children
+    @children = {}
 
   render: ->
     @clearChildren()
@@ -21,12 +21,16 @@ module.exports = class App extends Backbone.View
       entityList: @$('.entity-list')
       entityForm: @$('.entity-form')
       documentList: @$('.document-list')
-    @children = [
-      new EntityListView(collection: @entities, el: @ui.entityList)
-      formView = new EntityFormView(el: @ui.entityForm)
-    ]
-    child.render() for child in @children
-    @listenTo(formView, 'create', @onCreate)
+
+    @children =
+      entityList: new EntityListView(collection: @entities)
+      entityForm: new EntityFormView()
+
+    for k, view of @children
+      view.render()
+      @ui[k].append(view.el)
+
+    @listenTo(@children.entityForm, 'create', @onCreate)
     @
 
   onCreate: (attributes) ->

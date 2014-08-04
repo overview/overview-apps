@@ -2,6 +2,7 @@ gulp = require('gulp')
 gutil = require('gulp-util')
 jade = require('gulp-jade')
 less = require('gulp-less')
+plumber = require('gulp-plumber')
 rimraf = require('gulp-rimraf')
 source = require('vinyl-source-stream')
 webserver = require('gulp-webserver')
@@ -43,13 +44,14 @@ gulp.task 'clean', ->
 
 # ./css/**/*.less -> ./dist/css/main.less
 doCss = ->
-  gulp.src('./css/main.less')
+  gulp.src('css/main.less')
+    .pipe(plumber())
     .pipe(less())
     .pipe(gulp.dest('dist/css'))
 gulp.task('css', [ 'clean' ], doCss)
 gulp.task('css-noclean', doCss)
 gulp.task 'watch-css', [ 'css' ], ->
-  gulp.watch('./css/**/*', [ 'css-noclean' ])
+  gulp.watch('css/**/*', [ 'css-noclean' ])
 
 # ./js/**/*.(coffee|js) -> ./dist/app.js
 gulp.task('js', [ 'clean' ], -> startBrowserify(false))
@@ -57,16 +59,17 @@ gulp.task('watch-js', [ 'clean' ], -> startBrowserify(true))
 
 # ./app/**/* -> ./dist/**/*
 doApp = ->
-  gulp.src('./app/**/*')
+  gulp.src('app/**/*')
     .pipe(gulp.dest('dist'))
 gulp.task('app', [ 'clean' ], doApp)
 gulp.task('app-noclean', doApp)
 gulp.task 'watch-app', [ 'app' ], ->
-  gulp.watch('./app/**/*', [ 'app-noclean' ])
+  gulp.watch('app/**/*', [ 'app-noclean' ])
 
 # ./jade/**/*.jade -> ./dist/**/*.html
 doJade = ->
-  gulp.src('./jade/**/*.jade')
+  gulp.src('jade/**/*.jade')
+    .pipe(plumber())
     .pipe(jade({
       pretty: true
     }))

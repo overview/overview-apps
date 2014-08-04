@@ -1,0 +1,43 @@
+@import './vendor/bootstrap/bootstrap.less';
+
+ul.entities {
+  .list-unstyled();
+}
+
+li.entity {
+  position: relative;
+  line-height: 1.5em;
+
+  &:hover {
+    background: @table-bg-hover;
+  }
+
+  h5 {
+    font-size: 1em;
+    font-weight: bold;
+    line-height: inherit;
+    margin-bottom: 0;
+  }
+
+  .invalid {
+    .text-muted();
+    line-height: 3em;
+  }
+
+  p.terms {
+    .text-muted();
+    float: left;
+  }
+
+  ul.terms {
+    .list-inline();
+    display: block;
+  }
+
+  a.delete {
+    line-height: 3em;
+    position: absolute;
+    right: 0;
+    top: 0;
+  }
+}

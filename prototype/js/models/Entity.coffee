@@ -10,18 +10,24 @@ Backbone = require('backbone')
 module.exports = class Entity extends Backbone.Model
   idAttribute: 'query'
 
-  isNew: -> true # Entity is immutable. If we're saving it, it's new.
-
   defaults:
     name: ''
     terms: []
-    state: 'InProgress'
+    state: 'New'
     nDocuments: 0
 
-  initialize: (attributes) ->
+  # Entity is immutable.
+  #
+  # If we're saving it, it's new.
+  # If we're deleting it, it isn't.
+  isNew: -> @attributes.state == 'New'
+
+  initialize: (attributes, options) ->
     if !attributes.query
       query = "\"entity-#{new Buffer(attributes.name || '').toString('base64')}\" OR \"#{(attributes.terms || []).join('" OR "')}\""
       @set(query: query)
+
+    @parsed = options.parse
 
   parse: (json) ->
     if json && (m = /^"entity-((?:[A-Za-z0-9+\/]{4})*(?:[A-Za-z0-9+\/]{2}==|[A-Za-z0-9+\/]{3}=)?)" OR "(.*)"$/.exec(json.query))?
@@ -30,3 +36,5 @@ module.exports = class Entity extends Backbone.Model
       terms: m[2].split(/"\sOR\s"/g)
       state: json.state
       nDocuments: json.nDocuments
+    else
+      json

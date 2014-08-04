@@ -1,2 +1,10 @@
-span.name= name
-span.terms= terms.join(', ')
+if !name
+  .invalid [Invalid entity]
+else
+  h5= name
+  p.terms Search terms:
+  ul.terms
+    for term in terms
+      li.term= term
+
+a.delete(href='#') Delete
