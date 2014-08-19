@@ -1,0 +1,15 @@
+form.viz(action='#', method='post', role='form')
+  fieldset
+    .form-group
+      label(for='viz-title') Name for the entire set of entities
+      input.form-control#viz-title(name='title', placeholder='My entities', value=title)
+
+    .form-group
+      label(for='viz-json-foo') Foo
+      input.form-control#viz-json-foo(name='json.foo', placeholder='foo', value=(json.foo || ''))
+
+    .form-group
+      label(for='viz-json-bar') Bar
+      input.form-control#viz-json-bar(name='json.bar', placeholder='bar', value=(json.bar || ''))
+
+    button.btn.btn-primary(type='submit') Save

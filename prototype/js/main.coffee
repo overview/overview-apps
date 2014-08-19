@@ -4,9 +4,11 @@ Backbone.$ = $
 
 App = require('./app')
 Entities = require('./collections/Entities')
+Viz = require('./models/Viz')
 
-DocumentSetId = '1'
-ApiToken = '62xcb9msd0ag8t9ghuycwhlb7'
+DocumentSetId = '451'
+VizId = '1937030250496'
+ApiToken = '7qhky85pjdbn2vcgvwlxztwgf'
 
 Backbone.ajax = (options) ->
   options = $.extend({
@@ -16,11 +18,14 @@ Backbone.ajax = (options) ->
   $.ajax(options)
 
 $ ->
-  entities = new Entities([], documentSetId: DocumentSetId)
+  viz = new Viz(id: VizId)
+  entities = new Entities([], vizId: VizId)
 
+  viz.fetch()
   entities.fetch()
 
   app = new App
     el: $('#app')[0]
+    viz: viz
     entities: entities
   app.render()
