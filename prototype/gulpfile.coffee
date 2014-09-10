@@ -5,7 +5,7 @@ less = require('gulp-less')
 plumber = require('gulp-plumber')
 rimraf = require('gulp-rimraf')
 source = require('vinyl-source-stream')
-webserver = require('gulp-webserver')
+supervisor = require('gulp-supervisor')
 
 browserify = require('browserify')
 watchify = require('watchify')
@@ -57,14 +57,14 @@ gulp.task 'watch-css', [ 'css' ], ->
 gulp.task('js', [ 'clean' ], -> startBrowserify(false))
 gulp.task('watch-js', [ 'clean' ], -> startBrowserify(true))
 
-# ./app/**/* -> ./dist/**/*
-doApp = ->
-  gulp.src('app/**/*')
+# ./public/**/* -> ./dist/**/*
+doPublic = ->
+  gulp.src('public/**/*')
     .pipe(gulp.dest('dist'))
-gulp.task('app', [ 'clean' ], doApp)
-gulp.task('app-noclean', doApp)
-gulp.task 'watch-app', [ 'app' ], ->
-  gulp.watch('app/**/*', [ 'app-noclean' ])
+gulp.task('public', [ 'clean' ], doPublic)
+gulp.task('public-noclean', doPublic)
+gulp.task 'watch-public', [ 'public' ], ->
+  gulp.watch('public/**/*', [ 'public-noclean' ])
 
 # ./jade/**/*.jade -> ./dist/**/*.html
 doJade = ->
@@ -79,13 +79,12 @@ gulp.task('jade-noclean', doJade)
 gulp.task 'watch-jade', [ 'jade' ], ->
   gulp.watch('./jade/**/*.jade', [ 'jade-noclean' ])
 
-gulp.task 'watch', [ 'watch-css', 'watch-js', 'watch-jade', 'watch-app' ], ->
+gulp.task 'watch', [ 'watch-css', 'watch-js', 'watch-jade', 'watch-public' ], ->
 
 gulp.task 'server', ->
-  gulp.src('dist')
-    .pipe(webserver({
-      port: 9001
-      fallback: 'index.html'
-    }))
+  supervisor("app/main.coffee", {
+    watch: [ 'app', 'lib' ]
+    extensions: [ 'coffee', 'js', 'jade' ]
+  })
 
 gulp.task 'default', [ 'watch', 'server' ]
