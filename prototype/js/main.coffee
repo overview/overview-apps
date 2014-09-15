@@ -1,6 +1,5 @@
 Backbone = require('backbone')
-$ = require('jquery')
-Backbone.$ = $
+$ = Backbone.$ = require('jquery')
 
 App = require('./app')
 Entities = require('./collections/Entities')
@@ -13,20 +12,21 @@ queryString = (->
     .map((x) -> x.split('=', 2))
 
   for x in list
-    map[x[0]] = x[1]
+    map[decodeURIComponent(x[0])] = decodeURIComponent(x[1])
 
   map
 )()
 
-Backbone.ajax = (options) ->
-  options = $.extend({
-    beforeSend: (xhr) ->
-      xhr.setRequestHeader('Authorization', "Basic #{new Buffer("#{queryString.apiToken}:x-auth-token").toString('base64')}")
-  }, options)
-  $.ajax(options)
+$.ajaxSetup
+  beforeSend: (xhr, options) ->
+    if options.url.substring(0, queryString.server.length) == queryString.server
+      xhr.setRequestHeader('Authorization', "Basic #{new Buffer("" + queryString.apiToken + ":x-auth-token").toString('base64')}")
 
 $ ->
-  entities = new Entities([], vizId: queryString.vizId)
+  entities = new Entities([], {
+    server: queryString.server
+    vizId: queryString.vizId
+  })
   entities.fetch()
 
   app = new App
