@@ -8,6 +8,11 @@ module.exports = class EntityFormView extends Backbone.View
   events:
     'submit form': 'onSubmit'
 
+  initialize: (options) ->
+    throw 'Must pass options.documentSetId, a Number' if !options?.documentSetId
+
+    @documentSetId = options.documentSetId
+
   render: ->
     @$el.html(@template())
 
@@ -20,5 +25,8 @@ module.exports = class EntityFormView extends Backbone.View
       .filter((x) -> !!x)
 
     if name && terms.length
-      @trigger('create', name: name, terms: terms)
-      @$('form')[0].reset()
+      Backbone.ajax
+        url: "http://localhost:9000/api/v1/document-sets/#{@documentSetId}/documents?fields=id&q=" + encodeURIComponent(terms.join(" "))
+        success: (ids) =>
+          @trigger('create', name: name, terms: terms, nDocuments: ids.length)
+          @$('form')[0].reset()

@@ -13,6 +13,8 @@ app.use (req, res, next) ->
 app.get '/metadata', (req, res) ->
   res.send('ok')
 
-app.use(serveStatic('dist'))
+app.use(serveStatic('dist', {
+  extensions: [ 'html' ]
+}))
 
 app.listen(9001)

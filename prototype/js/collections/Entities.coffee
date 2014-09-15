@@ -2,6 +2,7 @@ _ = require('lodash')
 Backbone = require('backbone')
 
 module.exports = class Entities extends Backbone.Collection
+  comparator: 'name'
   model: require('../models/Entity')
   url: -> "http://localhost:9000/api/v1/vizs/#{@vizId}/objects"
 

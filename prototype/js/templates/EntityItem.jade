@@ -1,10 +1,11 @@
+a.delete(href='#') Delete
+
 if !name
   .invalid [Invalid entity]
 else
+  .count= nDocuments
   h5= name
   p.terms Search terms:
   ul.terms
     for term in terms
       li.term= term
-
-a.delete(href='#') Delete

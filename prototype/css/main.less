@@ -5,18 +5,27 @@ ul.entities {
 }
 
 li.entity {
+  clear: both;
   position: relative;
-  line-height: 1.5em;
+  line-height: 1.5;
+  margin: .5em;
 
   &:hover {
     background: @table-bg-hover;
+  }
+
+  .count {
+    float: left;
+    font-size: 3em;
+    line-height: 1;
+    margin-right: .25em;
   }
 
   h5 {
     font-size: 1em;
     font-weight: bold;
     line-height: inherit;
-    margin-bottom: 0;
+    margin: 0;
   }
 
   .invalid {
@@ -26,18 +35,17 @@ li.entity {
 
   p.terms {
     .text-muted();
-    float: left;
+    display: inline;
+    margin: 0 .5em 0 0;
   }
 
   ul.terms {
     .list-inline();
-    display: block;
+    display: inline;
   }
 
   a.delete {
     line-height: 3em;
-    position: absolute;
-    right: 0;
-    top: 0;
+    float: right;
   }
 }
