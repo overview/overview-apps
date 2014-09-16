@@ -2,28 +2,21 @@ doctype
 html
   head
     title Overview Sample Code
+    link(rel="stylesheet", href="//cdnjs.cloudflare.com/ajax/libs/prism/0.0.1/prism.min.css")
     style.
-      ol {
-        display: block;
-        list-style: none;
-        margin: 0;
-        padding: 0;
-        font-family: monospace;
-        white-space: pre;
-        background: #def;
-        padding: 1em;
-        overflow: auto;
-      }
-
-      li {
-        display: block;
-        line-height: 1.4;
-        min-height: 1.4em;
-      }
-
       code {
         background: #def;
         padding: .1em .3em;
+      }
+
+      code.block {
+        display: block;
+        font-size: .85em;
+        white-space: pre;
+        line-height: 1.4;
+        background: #def;
+        overflow: auto;
+        padding: 1em;
       }
 
       p {
@@ -54,6 +47,7 @@ html
       }
 
     script(src="http://code.jquery.com/jquery-2.1.1.min.js")
+    script(src="//cdnjs.cloudflare.com/ajax/libs/prism/0.0.1/prism.min.js")
     script.
       $(function() {
         $('a.try-it').click(function(e) {
@@ -82,161 +76,249 @@ html
       p You're writing your own standalone app? Great!
       p Choose a programming language and get started.
 
+      - var maxLengthU = Math.max(('server' + server).length, ('document_set_id' + documentSetId).length, ('viz_id' + vizId).length, ('api_token' + apiToken).length);
+      - var maxLengthC = Math.max(('server' + server).length, ('documentsetid' + documentSetId).length, ('vizid' + vizId).length, ('apitoken' + apiToken).length);
+      - var spacesU = '                                                                                '.substr(0, maxLengthU);
+      - var spacesC = '                                                                                '.substr(0, maxLengthC);
+      - function ws(k, v, camelCase) {
+      -   if (typeof(camelCase) === 'undefined') camelCase = k.indexOf('_') == -1;
+      -   var s = camelCase ? spacesC : spacesU;
+      -   console.log(k, v, camelCase, s.length, (k+v).length);
+      -   return s.substr((k + v).length);
+      - }
+
       .accordion
         a#shell(href="#shell") Shell
         div
           p.instructions Copy/paste this directly into a shell.
-          ol.code
-            li export SERVER="#{server}"
-            li export DOCUMENT_SET_ID="#{documentSetId}"
-            li export VIZ_ID="#{vizId}"
-            li export API_TOKEN="#{apiToken}"
-            li
-            li # list documents
-            li DOCS_URL="$SERVER/api/v1/document-sets/$DOCUMENT_SET_ID/documents"
-            li curl -u "$API_TOKEN:x-auth-token" "$DOCS_URL"
+
+          code.block.language-bash.
+            # Set up variables
+            export SERVER="#{server}" #{ws('SERVER', server, false)}# Overview API host
+            export DOCUMENT_SET_ID="#{documentSetId}" #{ws('DOCUMENT_SET_ID', documentSetId)}# points to documents
+            export VIZ_ID="#{vizId}" #{ws('VIZ_ID', vizId)}# points to App-private data
+            export API_TOKEN="#{apiToken}" #{ws('API_TOKEN', apiToken)}# password
+
+            # Hit the URL to list documents
+            DOCS_URL="$SERVER/api/v1/document-sets/$DOCUMENT_SET_ID/documents"
+            curl -u "$API_TOKEN:x-auth-token" "$DOCS_URL"
 
         a#node(href="#node") JavaScript (Node)
         div
           p.instructions Copy/paste this into a file "app.js", run <code>npm install <a href="https://github.com/mikeal/request" target="_parent">request</a></code> and then run <code>node app.js</code>.
-          ol.code
-            li var server='#{server}',
-            li     documentSetId='#{documentSetId}',
-            li     vizId='#{vizId}',
-            li     apiToken='#{apiToken}';
-            li
-            li var request = require('request'),
-            li     req = request.defaults({
-            li       auth: { user: apiToken, pass: 'x-auth-token' }
-            li     }),
-            li     basePath = server + '/api/v1';
-            li
-            li // list documents
-            li var docsPath = basePath + '/document-sets/' + documentSetId + '/documents';
-            li req(docsPath, function(error, response, body) {
-            li   console.log('Number of documents: ' + body.length);
-            li   console.log(body);
-            li });
+
+          code.block.language-javascript.
+            // Set up variables
+            var server='#{server}', #{ws('server', server)}// Overview API host
+                documentSetId='#{documentSetId}', #{ws('documentSetId', documentSetId)}// points to documents
+                vizId='#{vizId}', #{ws('vizId', vizId)}// points to App-private data
+                apiToken='#{apiToken}'; #{ws('apiToken', apiToken)}// password
+
+            // Set up HTTP request function that uses apiToken
+            var request = require('request'),
+                req = request.defaults({
+                  auth: { user: apiToken, pass: 'x-auth-token' }
+                });
+
+            // URL to list documents
+            var docsPath = server + '/api/v1/document-sets/'
+                + documentSetId + '/documents';
+
+            // Send request; handle response asynchronously
+            req(docsPath, function(error, response, body) {
+              // Response is a JavaScript Array
+              console.log('Number of documents: ' + body.length);
+              console.log(body);
+            });
 
         a#browser(href="#browser") JavaScript (in-browser)
         div
           p.instructions Copy/paste this into a <code>&lt;script&gt;</code> tag on a website you control. Include <a href="https://jquery.com" target="_parent">jQuery</a> before it. <strong>Anybody who can read the web page can copy your API token and wreak havoc on your documents.</strong>
-          ol.code
-            li var server = '#{server}',
-            li     documentSetId = '#{documentSetId}',
-            li     vizId = '#{vizId}',
-            li     apiToken = '#{apiToken}',
-            li     basePath = server + '/api/v1';
-            li
-            li var docsPath = basePath + '/document-sets/' + documentSetId + '/documents';
-            li
-            li $.ajax({
-            li   url: docsPath,
-            li   headers: {
-            li     Authorization: 'Basic ' + btoa(apiToken + ':x-auth-token')
-            li   },
-            li   success: function(body) {
-            li     console.log("Number of documents: " + body.length);
-            li     console.log(body);
-            li   }
-            li });
+          code.block.language-javascript.
+            // Set up variables
+            var server='#{server}', #{ws('server', server)}// Overview API host
+                documentSetId='#{documentSetId}', #{ws('documentSetId', documentSetId)}// points to documents
+                vizId='#{vizId}', #{ws('vizId', vizId)}// points to App-private data
+                apiToken='#{apiToken}'; #{ws('apiToken', apiToken)}// password
+
+            // URL to list documents
+            var docsPath = basePath + '/api/v1/document-sets/'
+                + documentSetId + '/documents';
+
+            $.ajax({
+              url: docsPath,
+              headers: {
+                // Send HTTP Basic Authentication header
+                // btoa() is fairly new; Google can list alternatives
+                Authorization: 'Basic ' + btoa(apiToken + ':x-auth-token')
+              },
+              success: function(body) {
+                // Response is a JavaScript Array
+                console.log("Number of documents: " + body.length);
+                console.log(body);
+              }
+            });
           a.try-it(href="#") Run this code now (check your development console for output)
 
         a#coffee-browser(href="#coffee-browser") CoffeeScript (in-browser)
         div
           p.instructions Pipe this code through `coffee` and put the resulting JavaScript into your website. Include <a href="https://jquery.com" target="_parent">jQuery</a> before it. <strong>Anybody who can read the web page can copy your API token and wreak havoc on your documents.</strong>
-          ol.code
-            li server = '#{server}'
-            li documentSetId = '#{documentSetId}'
-            li vizId = '#{vizId}'
-            li apiToken = '#{apiToken}'
-            li basePath = server + '/api/v1'
-            li
-            li docsPath = "\#{basePath}/document-sets/\#{documentSetId}/documents"
-            li
-            li $.ajax
-            li   url: docsPath
-            li   headers:
-            li     Authorization: "Basic \#{btoa(apiToken + ':x-auth-token')}"
-            li   success: (body) ->
-            li     console.log("Number of documents: \#{body.length")
-            li     console.log(body)
+          code.block.language-coffeescript.
+            # Set up variables
+            Server = "#{server}" #{ws('server', server)}# Overview API host
+            DocumentSetId = "#{documentSetId}" #{ws('documentSetId', documentSetId)}# points to documents
+            VizId = "#{vizId}" #{ws('vizId', vizId)}# points to App-private data
+            ApiToken = "#{apiToken}" #{ws('apiToken', apiToken)}# password
+
+            # URL to list documents
+            docsPath = "\#{Server}/api/v1/document-sets/\#{DocumentSetId}/documents"
+
+            # Send request, including HTTP Basic Auth header
+            # btoa() is fairly new; Google can list alternatives
+            $.ajax
+              url: docsPath
+              headers:
+                Authorization: "Basic \#{btoa(ApiToken + ':x-auth-token')}"
+              success: (body) ->
+                # Body is a JavaScript Array
+                console.log("Number of documents: \#{body.length")
+                console.log(body)
 
         a#python3(href="#python3") Python 3
         div
           p.instructions Copy/paste this into a file "app.py" and execute it. (You'll need to <code>chmod +x app.py</code> on Mac and Linux to make it executable.)
-          ol.code
-            li #!/usr/bin/env python3
-            li import base64
-            li import json
-            li import io
-            li import urllib.request
-            li # Alternatively, use the <a href="https://pypi.python.org/pypi/requests" target="_parent">requests</a> module
-            li
-            li document_set_id = "#{documentSetId}"
-            li viz_id = "#{vizId}"
-            li api_token = "#{apiToken}"
-            li server = "#{server}"
-            li
-            li docs_path = '%s/api/v1/document-sets/%s/documents' % (server, document_set_id)
-            li
-            li auth_base64 = base64.b64encode(
-            li   ('%s:%s' % (api_token, 'x-auth-token')).encode('ascii')
-            li ).decode('ascii')
-            li headers = {
-            li   'Content-Type': 'application/json',
-            li   'Authorization': 'Basic %s' % auth_base64
-            li }
-            li req = urllib.request.Request(docs_path, headers=headers)
-            li res = urllib.request.urlopen(req) # synchronous
-            li buf = io.TextIOWrapper(res, res.headers.get_content_charset())
-            li data = json.load(buf)
-            li print("Number of documents: %d" % len(data))
-            li print(data)
+          code.block.language-python.
+            #!/usr/bin/env python3
+            import base64
+            import json
+            import io
+            import urllib.request
+
+            # Set up variables
+            server = "#{server}" #{ws('server', server, false)}# Overview API host
+            document_set_id = "#{documentSetId}" #{ws('document_set_id', documentSetId)}# points to documents
+            viz_id = "#{vizId}" #{ws('viz_id', vizId)}# points to App-private data
+            api_token = "#{apiToken}" #{ws('api_token', apiToken)}# password
+
+            # URL to list documents
+            docs_path = '%s/api/v1/document-sets/%s/documents' % (server, document_set_id)
+
+            # Create HTTP(S) request, using HTTP Basic Authentication
+            # urllib.request certainly doesn't make it simple. An alternative:
+            # the [requests](https://pypi.python.org/pypi/requests) module
+            auth_base64 = base64.b64encode(
+              ('%s:%s' % (api_token, 'x-auth-token')).encode('ascii')
+            ).decode('ascii')
+            headers = {
+              'Content-Type': 'application/json',
+              'Authorization': 'Basic %s' % auth_base64
+            }
+            req = urllib.request.Request(docs_path, headers=headers)
+
+            # Send the request, synchronously
+            # The response is raw bytes
+            res = urllib.request.urlopen(req)
+
+            # Convert from bytes to Unicode string. (Again, this should be
+            # simpler. The Python standard library is a lacklustre option.)
+            # The string contains JSON.
+            buf = io.TextIOWrapper(res, res.headers.get_content_charset())
+
+            # Parse the JSON string into a list of dicts
+            data = json.load(buf)
+
+            print("Number of documents: %d" % len(data))
+            print(data)
 
         a#java(href="#java") Java
         div
           p.instructions Download a <a href="http://search.maven.org/remotecontent?filepath=org/glassfish/javax.json/1.0.4/javax.json-1.0.4.jar" target="_parent">javax.json implementation</a>. Copy/paste this into a file "Main.java", run <code>javac -cp javax.json-1.0.4.jar Main.java</code> and then run <code>java -cp .:javax.json-1.0.4.jar Main</code>.
-          ol.code
-            li import java.net.URL;
-            li import java.net.URLConnection;
-            li import java.io.BufferedReader;
-            li import java.io.InputStream;
-            li import java.io.InputStreamReader;
-            li import javax.json.Json;
-            li import javax.json.JsonArray;
-            li import javax.json.JsonReader;
-            li import javax.xml.bind.DatatypeConverter;
-            li
-            li public class Main {
-            li     public static void main(String[] argv) throws Exception {
-            li         String documentSetId = "#{documentSetId}";
-            li         String vizId = "#{vizId}";
-            li         String apiToken = "#{apiToken}";
-            li         String server = "#{server}";
-            li
-            li         String docsPath = String.format(
-            li             "%s/api/v1/document-sets/%s/documents", server, documentSetId
-            li         );
-            li
-            li         URL docsUrl = new URL(docsPath);
-            li         URLConnection uc = docsUrl.openConnection();
-            li         String auth = apiToken + ":x-auth-token";
-            li         uc.setRequestProperty(
-            li             "Authorization",
-            li             "Basic " + DatatypeConverter.printBase64Binary(auth.getBytes())
-            li         );
-            li
-            li         try (
-            li             InputStream is = uc.getInputStream();
-            li             InputStreamReader isr = new InputStreamReader(is);
-            li             BufferedReader br = new BufferedReader(isr);
-            li             JsonReader jr = Json.createReader(br);
-            li         ) {
-            li             JsonArray data = jr.readArray();
-            li
-            li             System.out.println(String.format("Number of documents: %d", data.size()));
-            li             System.out.println(data.toString());
-            li         }
-            li     }
-            li }
+          code.block.language-java.
+            import java.net.URL;
+            import java.net.URLConnection;
+            import java.io.BufferedReader;
+            import java.io.InputStream;
+            import java.io.InputStreamReader;
+            import javax.json.Json;
+            import javax.json.JsonArray;
+            import javax.json.JsonReader;
+            import javax.xml.bind.DatatypeConverter;
+
+            public class Main {
+                public static void main(String[] argv) throws Exception {
+                    // Set up variables
+                    String server = "#{server}"; #{ws('server', server)}// Overview API host
+                    String documentSetId = "#{documentSetId}"; #{ws('documentSetId', documentSetId)}// points to documents
+                    String vizId = "#{vizId}"; #{ws('vizId', vizId)}// points to App-private data
+                    String apiToken = "#{apiToken}"; #{ws('apiToken', apiToken)}// password
+
+                    // URL to list documents
+                    String docsPath = String.format(
+                        "%s/api/v1/document-sets/%s/documents", server, documentSetId
+                    );
+
+                    // Send request, with HTTP Basic Authentication, synchronously.
+                    // If the connection fails, this will throw an exception.
+                    URL docsUrl = new URL(docsPath);
+                    URLConnection uc = docsUrl.openConnection();
+                    String auth = apiToken + ":x-auth-token";
+                    uc.setRequestProperty(
+                        "Authorization",
+                        "Basic " + DatatypeConverter.printBase64Binary(auth.getBytes())
+                    );
+
+                    // Read from the request:
+                    // * is: a handle on the raw bytes
+                    // * isr: decode the UTF-8 bytes to Java Chars
+                    // * br: do it all quickly
+                    // * jr: decode the Java Chars, which represent JSON
+                    //
+                    // This is try-using syntax: the resources will all be close()d.
+                    try (
+                        InputStream is = uc.getInputStream();
+                        InputStreamReader isr = new InputStreamReader(is);
+                        BufferedReader br = new BufferedReader(isr);
+                        JsonReader jr = Json.createReader(br);
+                    ) {
+                        JsonArray data = jr.readArray();
+
+                        System.out.println(String.format("Number of documents: %d", data.size()));
+                        System.out.println(data.toString());
+                    }
+                }
+            }
+
+        a#php(href="#php") PHP
+        div
+          p.instructions Copy/paste this into a file "app.php" and run <code>php app.php</code>.
+          code.block.language-php.
+            &lt;?php
+
+            // Set up variables
+            $server = '#{server}'; #{ws('server', server)}// Overview API host
+            $documentSetId = '#{documentSetId}'; #{ws('documentSetId', documentSetId)}// points to documents
+            $vizId = '#{vizId}'; #{ws('vizId', vizId)}// points to App-private data
+            $apiToken = '#{apiToken}'; #{ws('apiToken', apiToken)}// password
+
+            // URL to list documents
+            $docsUrl = "$server/api/v1/document-sets/$documentSetId/documents";
+
+            // Set up HTTP Basic Authentication
+            $base64Auth = base64_encode("$apiToken:x-auth-token");
+            $streamContext = stream_context_create(array(
+              'http' =&gt; array(
+                'header' =&gt; "Authorization: Basic $base64Auth\r\n" .
+                            "Accept: application/json\r\n"
+              ) 
+            ));
+
+            // Send the request and receive the JSON string result
+            $json = file_get_contents($docsUrl, false, $streamContext);
+
+            // Parse the JSON: an array of objects
+            $data = json_decode($json);
+
+            print("Number of documents: " . count($data) . "\n");
+            var_dump($data);
+
+            ?&gt;
