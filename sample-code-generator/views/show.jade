@@ -1,0 +1,242 @@
+doctype
+html
+  head
+    title Overview Sample Code
+    style.
+      ol {
+        display: block;
+        list-style: none;
+        margin: 0;
+        padding: 0;
+        font-family: monospace;
+        white-space: pre;
+        background: #def;
+        padding: 1em;
+        overflow: auto;
+      }
+
+      li {
+        display: block;
+        line-height: 1.4;
+        min-height: 1.4em;
+      }
+
+      code {
+        background: #def;
+        padding: .1em .3em;
+      }
+
+      p {
+        margin: 0;
+        padding: .5em 0;
+      }
+
+      .accordion>a {
+        font-size: 1.25em;
+        font-weight: bold;
+        display: block;
+        border: 1px solid #ccc;
+        padding: .5em;
+      }
+
+      .accordion>div {
+        border: 1px solid #ccc;
+        border-top: none;
+        padding: .5em;
+      }
+
+      .accordion div.hidden {
+        display: none;
+      }
+
+      .accordion .hidden {
+        border-color: transparent;
+      }
+
+    script(src="http://code.jquery.com/jquery-2.1.1.min.js")
+    script.
+      $(function() {
+        $('a.try-it').click(function(e) {
+          e.preventDefault();
+          var script = document.createElement('script');
+          script.text = $(this).prev('ol').text();
+          document.body.appendChild(script);
+        });
+      });
+
+      $(function() {
+        $('.accordion>a').click(function(e) {
+          // Do not e.preventDefault(); -- we want to jump
+          $('.accordion>*').addClass('hidden');
+          $(this).removeClass('hidden');
+          $(this).next().removeClass('hidden');
+        });
+
+        $('.accordion>a:first').click();
+      });
+
+  body
+    header
+      h1 Overview Sample Code
+    article
+      p You're writing your own standalone app? Great!
+      p Choose a programming language and get started.
+
+      .accordion
+        a#shell(href="#shell") Shell
+        div
+          p.instructions Copy/paste this directly into a shell.
+          ol.code
+            li export SERVER="#{server}"
+            li export DOCUMENT_SET_ID="#{documentSetId}"
+            li export VIZ_ID="#{vizId}"
+            li export API_TOKEN="#{apiToken}"
+            li
+            li # list documents
+            li DOCS_URL="$SERVER/api/v1/document-sets/$DOCUMENT_SET_ID/documents"
+            li curl -u "$API_TOKEN:x-auth-token" "$DOCS_URL"
+
+        a#node(href="#node") JavaScript (Node)
+        div
+          p.instructions Copy/paste this into a file "app.js", run <code>npm install <a href="https://github.com/mikeal/request" target="_parent">request</a></code> and then run <code>node app.js</code>.
+          ol.code
+            li var server='#{server}',
+            li     documentSetId='#{documentSetId}',
+            li     vizId='#{vizId}',
+            li     apiToken='#{apiToken}';
+            li
+            li var request = require('request'),
+            li     req = request.defaults({
+            li       auth: { user: apiToken, pass: 'x-auth-token' }
+            li     }),
+            li     basePath = server + '/api/v1';
+            li
+            li // list documents
+            li var docsPath = basePath + '/document-sets/' + documentSetId + '/documents';
+            li req(docsPath, function(error, response, body) {
+            li   console.log('Number of documents: ' + body.length);
+            li   console.log(body);
+            li });
+
+        a#browser(href="#browser") JavaScript (in-browser)
+        div
+          p.instructions Copy/paste this into a <code>&lt;script&gt;</code> tag on a website you control. Include <a href="https://jquery.com" target="_parent">jQuery</a> before it. <strong>Anybody who can read the web page can copy your API token and wreak havoc on your documents.</strong>
+          ol.code
+            li var server = '#{server}',
+            li     documentSetId = '#{documentSetId}',
+            li     vizId = '#{vizId}',
+            li     apiToken = '#{apiToken}',
+            li     basePath = server + '/api/v1';
+            li
+            li var docsPath = basePath + '/document-sets/' + documentSetId + '/documents';
+            li
+            li $.ajax({
+            li   url: docsPath,
+            li   headers: {
+            li     Authorization: 'Basic ' + btoa(apiToken + ':x-auth-token')
+            li   },
+            li   success: function(body) {
+            li     console.log("Number of documents: " + body.length);
+            li     console.log(body);
+            li   }
+            li });
+          a.try-it(href="#") Run this code now (check your development console for output)
+
+        a#coffee-browser(href="#coffee-browser") CoffeeScript (in-browser)
+        div
+          p.instructions Pipe this code through `coffee` and put the resulting JavaScript into your website. Include <a href="https://jquery.com" target="_parent">jQuery</a> before it. <strong>Anybody who can read the web page can copy your API token and wreak havoc on your documents.</strong>
+          ol.code
+            li server = '#{server}'
+            li documentSetId = '#{documentSetId}'
+            li vizId = '#{vizId}'
+            li apiToken = '#{apiToken}'
+            li basePath = server + '/api/v1'
+            li
+            li docsPath = "\#{basePath}/document-sets/\#{documentSetId}/documents"
+            li
+            li $.ajax
+            li   url: docsPath
+            li   headers:
+            li     Authorization: "Basic \#{btoa(apiToken + ':x-auth-token')}"
+            li   success: (body) ->
+            li     console.log("Number of documents: \#{body.length")
+            li     console.log(body)
+
+        a#python3(href="#python3") Python 3
+        div
+          p.instructions Copy/paste this into a file "app.py" and execute it. (You'll need to <code>chmod +x app.py</code> on Mac and Linux to make it executable.)
+          ol.code
+            li #!/usr/bin/env python3
+            li import base64
+            li import json
+            li import io
+            li import urllib.request
+            li # Alternatively, use the <a href="https://pypi.python.org/pypi/requests" target="_parent">requests</a> module
+            li
+            li document_set_id = "#{documentSetId}"
+            li viz_id = "#{vizId}"
+            li api_token = "#{apiToken}"
+            li server = "#{server}"
+            li
+            li docs_path = '%s/api/v1/document-sets/%s/documents' % (server, document_set_id)
+            li
+            li auth_base64 = base64.b64encode(
+            li   ('%s:%s' % (api_token, 'x-auth-token')).encode('ascii')
+            li ).decode('ascii')
+            li headers = {
+            li   'Content-Type': 'application/json',
+            li   'Authorization': 'Basic %s' % auth_base64
+            li }
+            li req = urllib.request.Request(docs_path, headers=headers)
+            li res = urllib.request.urlopen(req) # synchronous
+            li buf = io.TextIOWrapper(res, res.headers.get_content_charset())
+            li data = json.load(buf)
+            li print("Number of documents: %d" % len(data))
+            li print(data)
+
+        a#java(href="#java") Java
+        div
+          p.instructions Download a <a href="http://search.maven.org/remotecontent?filepath=org/glassfish/javax.json/1.0.4/javax.json-1.0.4.jar" target="_parent">javax.json implementation</a>. Copy/paste this into a file "Main.java", run <code>javac -cp javax.json-1.0.4.jar Main.java</code> and then run <code>java -cp .:javax.json-1.0.4.jar Main</code>.
+          ol.code
+            li import java.net.URL;
+            li import java.net.URLConnection;
+            li import java.io.BufferedReader;
+            li import java.io.InputStream;
+            li import java.io.InputStreamReader;
+            li import javax.json.Json;
+            li import javax.json.JsonArray;
+            li import javax.json.JsonReader;
+            li import javax.xml.bind.DatatypeConverter;
+            li
+            li public class Main {
+            li     public static void main(String[] argv) throws Exception {
+            li         String documentSetId = "#{documentSetId}";
+            li         String vizId = "#{vizId}";
+            li         String apiToken = "#{apiToken}";
+            li         String server = "#{server}";
+            li
+            li         String docsPath = String.format(
+            li             "%s/api/v1/document-sets/%s/documents", server, documentSetId
+            li         );
+            li
+            li         URL docsUrl = new URL(docsPath);
+            li         URLConnection uc = docsUrl.openConnection();
+            li         String auth = apiToken + ":x-auth-token";
+            li         uc.setRequestProperty(
+            li             "Authorization",
+            li             "Basic " + DatatypeConverter.printBase64Binary(auth.getBytes())
+            li         );
+            li
+            li         try (
+            li             InputStream is = uc.getInputStream();
+            li             InputStreamReader isr = new InputStreamReader(is);
+            li             BufferedReader br = new BufferedReader(isr);
+            li             JsonReader jr = Json.createReader(br);
+            li         ) {
+            li             JsonArray data = jr.readArray();
+            li
+            li             System.out.println(String.format("Number of documents: %d", data.size()));
+            li             System.out.println(data.toString());
+            li         }
+            li     }
+            li }

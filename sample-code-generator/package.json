@@ -1,0 +1,28 @@
+{
+  "name": "overview-app-sample-code-generator",
+  "version": "0.0.1",
+  "description": "Displays sample code for using the Overview API",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/overview/overview-apps.git"
+  },
+  "keywords": [
+    "overview",
+    "app",
+    "variables"
+  ],
+  "author": "Adam Hooper <adam@adamhooper.com>",
+  "license": "AGPL-2",
+  "bugs": {
+    "url": "https://github.com/overview/overview-apps/issues"
+  },
+  "homepage": "https://github.com/overview/overview-apps",
+  "dependencies": {
+    "express": "^4.9.0",
+    "jade": "^1.6.0",
+    "morgan": "^1.3.1"
+  }
+}
