@@ -29,9 +29,9 @@ Developing
 ----------
 
 Run `gulp dev` to recompile files on change and start a simple web server on
-port 8000. Browse to [http://localhost:8000/show] to test it out; you'll need
-to instantiate it within your local Overview instance to get a valid query
-string.
+port 8000. Browse to [http://localhost:8000/show](http://localhost:8000/show)
+to test it out; you'll need to instantiate it within your local Overview
+instance to get a valid query string.
 
 When you're done, run `gulp` to minify the resulting JavaScript, then commit.
 
