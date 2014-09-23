@@ -1,0 +1,56 @@
+import java.net.URL;
+import java.net.URLConnection;
+import java.io.BufferedReader;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import javax.json.Json;
+import javax.json.JsonObject;
+import javax.json.JsonReader;
+import javax.xml.bind.DatatypeConverter;
+
+public class Main {
+    public static void main(String[] argv) throws Exception {
+        // Set up variables
+<vars>
+        String server = "##server";               |// Overview API host
+        String documentSetId = "##documentSetId"; |// points to documents
+        String vizId = "##vizId";                 |// points to App-private data
+        String apiToken = "##apiToken";           |// password
+</vars>
+
+        // URL to list documents
+        String docsPath = String.format(
+            "%s/api/v1/document-sets/%s/documents", server, documentSetId
+        );
+
+        // Send request, with HTTP Basic Authentication, synchronously.
+        // If the connection fails, this will throw an exception.
+        URL docsUrl = new URL(docsPath);
+        URLConnection uc = docsUrl.openConnection();
+        String auth = apiToken + ":x-auth-token";
+        uc.setRequestProperty(
+            "Authorization",
+            "Basic " + DatatypeConverter.printBase64Binary(auth.getBytes())
+        );
+
+        // Read from the request:
+        // * is: a handle on the raw bytes
+        // * isr: decode the UTF-8 bytes to Java Chars
+        // * br: do it all quickly
+        // * jr: decode the Java Chars, which represent JSON
+        //
+        // This is try-using syntax: the resources will all be close()d.
+        try (
+            InputStream is = uc.getInputStream();
+            InputStreamReader isr = new InputStreamReader(is);
+            BufferedReader br = new BufferedReader(isr);
+            JsonReader jr = Json.createReader(br);
+        ) {
+            JsonObject body = jr.readObject();
+            int n = body.getJsonObject("pagination").getJsonNumber("total").intValueExact();
+
+            System.out.println(String.format("Number of documents: %d", n));
+            System.out.println(body.getJsonArray("items").toString());
+        }
+    }
+}

@@ -1,0 +1,43 @@
+#!/usr/bin/env python3
+import base64
+import json
+import io
+import urllib.request
+
+# Set up variables
+<vars>
+server = "##server"                 |# Overview API host
+document_set_id = "##documentSetId" |# points to documents
+viz_id = "##vizId"                  |# points to App-private data
+api_token = "##apiToken"            |# password
+</vars>
+
+# URL to list documents
+docs_path = '%s/api/v1/document-sets/%s/documents' % (server, document_set_id)
+
+# Create HTTP(S) request, using HTTP Basic Authentication
+# urllib.request certainly doesn't make it simple. An alternative:
+# the [requests](https://pypi.python.org/pypi/requests) module
+auth_base64 = base64.b64encode(
+  ('%s:%s' % (api_token, 'x-auth-token')).encode('ascii')
+).decode('ascii')
+headers = {
+  'Content-Type': 'application/json',
+  'Authorization': 'Basic %s' % auth_base64
+}
+req = urllib.request.Request(docs_path, headers=headers)
+
+# Send the request, synchronously
+# The response is raw bytes
+res = urllib.request.urlopen(req)
+
+# Convert from bytes to Unicode string. (Again, this should be
+# simpler. The Python standard library is a lacklustre option.)
+# The string contains JSON.
+buf = io.TextIOWrapper(res, res.headers.get_content_charset())
+
+# Parse the JSON string into a list of dicts
+data = json.load(buf)
+
+print("Number of documents: %d" % data['pagination']['total'])
+print(data['items'])

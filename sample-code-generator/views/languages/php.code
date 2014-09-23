@@ -1,0 +1,32 @@
+<?php
+
+// Set up variables
+<vars>
+$server = '##server';               |// Overview API host
+$documentSetId = '##documentSetId'; |// points to documents
+$vizId = '##vizId';                 |// points to App-private data
+$apiToken = '##apiToken';           |// password
+</vars>
+
+// URL to list documents
+$docsUrl = "$server/api/v1/document-sets/$documentSetId/documents";
+
+// Set up HTTP Basic Authentication
+$base64Auth = base64_encode("$apiToken:x-auth-token");
+$streamContext = stream_context_create(array(
+  'http' => array(
+    'header' => "Authorization: Basic $base64Auth\r\n" .
+                "Accept: application/json\r\n"
+  ) 
+));
+
+// Send the request and receive the JSON string result
+$json = file_get_contents($docsUrl, false, $streamContext);
+
+// Parse the JSON: an array of objects
+$data = json_decode($json);
+
+print("Number of documents: " . $data->pagination->total . "\n");
+var_dump($data->items);
+
+?>

@@ -1,0 +1,24 @@
+// Set up variables
+<vars>
+var server='##server';               |// Overview API host
+var documentSetId='##documentSetId'; |// points to documents
+var vizId='##vizId';                 |// points to App-private data
+var apiToken='##apiToken';           |// password
+</vars>
+
+// Set up HTTP request function that uses apiToken
+var request = require('request'),
+    req = request.defaults({
+      auth: { user: apiToken, pass: 'x-auth-token' }
+    });
+
+// URL to list documents
+var docsPath = server + '/api/v1/document-sets/'
+    + documentSetId + '/documents';
+
+// Send request; handle response asynchronously
+req(docsPath, function(error, response, body) {
+  // Response is a JavaScript Array
+  console.log('Number of documents: ' + body.pagination.total);
+  console.log(body.items);
+});

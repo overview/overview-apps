@@ -34,7 +34,7 @@ describe 'App', ->
       expect(@promise.isPending()).to.be.true
 
     it 'should resolve when the ajax response resolves', ->
-      @resolve([{ title: 'a document' }])
+      @resolve(items: [{ title: 'a document' }])
       expect(@promise.isPending()).to.be.false
       expect(@promise.value()).to.deep.eq([{ title: 'a document' }])
 
@@ -65,7 +65,7 @@ describe 'App', ->
       , 0)
 
     it 'should show documents on success', (done) ->
-      @resolve([{ title: 'foo' }])
+      @resolve(items: [{ title: 'foo' }])
       setTimeout(=> # slower than process.nextTick()
         expect(@$el.find('ul li').text()).to.eq('foo')
         done()

@@ -1,0 +1,21 @@
+# Set up variables
+<vars>
+Server = "##server"               |# Overview API host
+DocumentSetId = "##documentSetId" |# points to documents
+VizId = "##vizId"                 |# points to App-private data
+ApiToken = "##apiToken"           |# password
+</vars>
+
+# URL to list documents
+docsPath = "\#{Server}/api/v1/document-sets/\#{DocumentSetId}/documents"
+
+# Send request, including HTTP Basic Auth header
+# btoa() is fairly new; Google can list alternatives
+$.ajax
+  url: docsPath
+  headers:
+    Authorization: "Basic \#{btoa(ApiToken + ':x-auth-token')}"
+  success: (body) ->
+    # Body is a JavaScript Array
+    console.log("Number of documents: \#{body.pagination.total}")
+    console.log(body.items)

@@ -1,0 +1,25 @@
+// Set up variables
+<vars>
+var server='##server';               |// Overview API host
+var documentSetId='##documentSetId'; |// points to documents
+var vizId='##vizId';                 |// points to App-private data
+var apiToken='##apiToken';           |// password
+</vars>
+
+// URL to list documents
+var docsPath = basePath + '/api/v1/document-sets/'
+    + documentSetId + '/documents';
+
+$.ajax({
+  url: docsPath,
+  headers: {
+    // Send HTTP Basic Authentication header
+    // btoa() is fairly new; Google can list alternatives
+    Authorization: 'Basic ' + btoa(apiToken + ':x-auth-token')
+  },
+  success: function(body) {
+    // Response is a JavaScript Array
+    console.log("Number of documents: " + body.pagination.total);
+    console.log(body.items);
+  }
+});

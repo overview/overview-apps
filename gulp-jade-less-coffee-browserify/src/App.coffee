@@ -36,8 +36,8 @@ module.exports = class App
     @$el.text('Loading…')
 
     @getDocuments()
-      .then (documents) =>
-        html = DocumentList(documents: documents)
+      .then (result) =>
+        html = DocumentList(documents: result.items)
         @$el.html(html)
       .catch (e) => @$el.text('Error')
 

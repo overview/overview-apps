@@ -1,0 +1,11 @@
+# Set up variables
+<vars>
+export SERVER="##server"                |# Overview API host
+export DOCUMENT_SET_ID="##documentSetId"|# points to documents
+export VIZ_ID="##vizId"                 |# points to App-private data
+export API_TOKEN="##apiToken"           |# password
+</vars>
+
+# Hit the URL to list documents
+DOCS_URL="$SERVER/api/v1/document-sets/$DOCUMENT_SET_ID/documents"
+curl -u "$API_TOKEN:x-auth-token" "$DOCS_URL"
