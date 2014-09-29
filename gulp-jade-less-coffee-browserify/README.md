@@ -12,7 +12,7 @@ Structure
    [Browserify](http://browserify.org/))
 * `jade` contains HTML files (in [Jade](http://jade-lang.com/))
 * `less` contains CSS files (in [Less](http://lesscss.org/))
-* `test` contais unit tests (using Mocha/Sinon/Chai)
+* `test` contains unit tests (using Mocha/Sinon/Chai)
 
 Testing
 -------
