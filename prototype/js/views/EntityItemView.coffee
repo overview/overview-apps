@@ -6,6 +6,15 @@ module.exports = class EntityItemView extends Marionette.ItemView
 
   events:
     'click .delete': 'onDelete'
+    'click a.object': 'onClick'
+  
+  onClick: (e) ->
+    e.preventDefault()
+    attrs = @model.attributes
+    window.parent.postMessage({
+      call: 'setDocumentListParams'
+      args: [ { q: encodeURIComponent(attrs.terms.join(' ')), name: attrs.name } ]
+    }, global.server)
 
   template: require('../templates/EntityItem')
 

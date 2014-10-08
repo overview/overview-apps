@@ -22,6 +22,8 @@ $.ajaxSetup
     if options.url.substring(0, queryString.server.length) == queryString.server
       xhr.setRequestHeader('Authorization', "Basic #{new Buffer("" + queryString.apiToken + ":x-auth-token").toString('base64')}")
 
+global.server = queryString.server
+
 $ ->
   entities = new Entities([], {
     server: queryString.server

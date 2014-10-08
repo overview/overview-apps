@@ -3,8 +3,9 @@ a.delete(href='#') Delete
 if !name
   .invalid [Invalid entity]
 else
-  .count= nDocuments
-  h5= name
+  a.object.count(href: "#")= nDocuments
+  h5
+    a.object(href: "#")= name
   p.terms Search terms:
   ul.terms
     for term in terms
