@@ -1,20 +1,20 @@
-VizObject+Selection App
-=======================
+StoreObject+Selection App
+=========================
 
 This app showcases two features of Overview's App system:
 
-* VizObjects
+* StoreObjects
 * Selections
 
-A VizObject is any object your App choses to save to the Overview database.
+A StoreObject is any object your App choses to save to the Overview database.
 
 A Selection is a specification that pinpoints a list of articles.
 
 Here's how the App works:
 
-1. It creates VizObjects. You specify the name; it will choose a random number
-   of articles (up to 100) and add them to the VizObject.
-2. It displays the list of VizObjects (within its iframe).
+1. It creates StoreObjects. You specify the name; it will choose a random number
+   of articles (up to 100) and add them to the StoreObject.
+2. It displays the list of StoreObjects (within its iframe).
 3. It lets you set the selection (outside its iframe).
 
 Read the source code to learn how to do all of these things.

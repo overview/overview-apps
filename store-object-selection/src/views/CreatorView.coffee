@@ -18,7 +18,7 @@ module.exports = class CreatorView extends Marionette.ItemView
     name: '[name=name]'
 
   initialize: (options) ->
-    throw 'Must pass options.collection, a VizObjects' if !@collection
+    throw 'Must pass options.collection, a StoreObjects' if !@collection
     throw 'Must pass options.documentIds, an Array of Numbers' if !options?.documentIds
     @documentIds = options.documentIds
 
@@ -37,7 +37,7 @@ module.exports = class CreatorView extends Marionette.ItemView
 
         Backbone.ajax
           type: 'post'
-          url: "/vizs/#{global.vizId}/document-objects"
+          url: '/store/document-objects'
           data: JSON.stringify(dvos)
           contentType: 'application/json'
           processData: false

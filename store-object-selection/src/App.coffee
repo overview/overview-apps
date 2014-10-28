@@ -1,18 +1,18 @@
 $ = require('jquery')
 Backbone = require('backbone')
-VizObjects = require('./collections/VizObjects')
-VizObjectsView = require('./views/VizObjectsView')
+StoreObjects = require('./collections/StoreObjects')
+StoreObjectsView = require('./views/StoreObjectsView')
 CreatorView = require('./views/CreatorView')
 
 module.exports = class App
   constructor: ->
-    @vizObjects = new VizObjects()
-    @vizObjects.fetch()
+    @storeObjects = new StoreObjects()
+    @storeObjects.fetch()
 
   attach: (el) ->
     @$el = $(el)
 
-    @objectsView = new VizObjectsView(collection: @vizObjects)
+    @objectsView = new StoreObjectsView(collection: @storeObjects)
     @objectsView.render()
 
     @$el.append(@objectsView.el)
@@ -20,7 +20,7 @@ module.exports = class App
     Backbone.ajax
       url: "/document-sets/#{global.documentSetId}/documents?fields=id"
       success: (ids) =>
-        @creatorView = new CreatorView(collection: @vizObjects, documentIds: ids)
+        @creatorView = new CreatorView(collection: @storeObjects, documentIds: ids)
         @creatorView.render()
         @$el.append(@creatorView.el)
 

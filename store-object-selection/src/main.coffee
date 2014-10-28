@@ -2,7 +2,7 @@ $ = require('jquery')
 Backbone = require('backbone')
 Backbone.$ = $ # ASAP, so other requires use it
 
-# Set global.{apiToken,server,documentSetId,vizId}
+# Set global.{apiToken,server,documentSetId}
 (->
   QueryString = require('querystring')
   qs = QueryString.parse(window.location.search.substr(1))
@@ -10,7 +10,6 @@ Backbone.$ = $ # ASAP, so other requires use it
   Params =
     server: 'a String'
     documentSetId: 'a String'
-    vizId: 'a String'
     apiToken: 'a String'
 
   for k, v of Params
