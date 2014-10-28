@@ -6,7 +6,6 @@ spawn = require('child_process').spawn
 Vars =
   server: 'SERVER'
   documentSetId: 'DOCUMENT_SET_ID'
-  vizId: 'VIZ_ID'
   apiToken: 'API_TOKEN'
 
 describe 'bash.code', ->

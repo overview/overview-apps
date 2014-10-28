@@ -31,7 +31,6 @@ app.get('/show', function(req, res) {
     return prepareCode(codeBlocks[key], {
       server: req.query.server,
       documentSetId: req.query.documentSetId,
-      vizId: req.query.vizId,
       apiToken: req.query.apiToken
     });
   }

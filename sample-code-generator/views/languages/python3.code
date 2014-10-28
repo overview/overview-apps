@@ -8,7 +8,6 @@ import urllib.request
 <vars>
 server = "##server"                 |# Overview API host
 document_set_id = "##documentSetId" |# points to documents
-viz_id = "##vizId"                  |# points to App-private data
 api_token = "##apiToken"            |# password
 </vars>
 

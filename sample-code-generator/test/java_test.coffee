@@ -54,7 +54,6 @@ java = (dest, done) ->
 Vars =
   server: 'SERVER'
   documentSetId: 'DOCUMENT_SET_ID'
-  vizId: 'VIZ_ID'
   apiToken: 'API_TOKEN'
 
 describe 'java.code', ->

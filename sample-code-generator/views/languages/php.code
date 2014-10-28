@@ -4,7 +4,6 @@
 <vars>
 $server = '##server';               |// Overview API host
 $documentSetId = '##documentSetId'; |// points to documents
-$vizId = '##vizId';                 |// points to App-private data
 $apiToken = '##apiToken';           |// password
 </vars>
 

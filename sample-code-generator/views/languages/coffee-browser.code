@@ -2,7 +2,6 @@
 <vars>
 Server = "##server"               |# Overview API host
 DocumentSetId = "##documentSetId" |# points to documents
-VizId = "##vizId"                 |# points to App-private data
 ApiToken = "##apiToken"           |# password
 </vars>
 

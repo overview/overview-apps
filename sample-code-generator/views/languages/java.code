@@ -14,7 +14,6 @@ public class Main {
 <vars>
         String server = "##server";               |// Overview API host
         String documentSetId = "##documentSetId"; |// points to documents
-        String vizId = "##vizId";                 |// points to App-private data
         String apiToken = "##apiToken";           |// password
 </vars>
 
