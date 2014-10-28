@@ -7,7 +7,6 @@ DocumentList = require('./templates/DocumentList.jade')
 Params =
   server: 'a String'
   documentSetId: 'a String'
-  vizId: 'a String'
   apiToken: 'a String'
 
 module.exports = class App

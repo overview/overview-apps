@@ -11,7 +11,6 @@ describe 'App', ->
     @options =
       server: 'https://example.org'
       documentSetId: '1'
-      vizId: '2'
       apiToken: 'asdf'
     @subject = new App(@options)
 
@@ -36,7 +35,7 @@ describe 'App', ->
     it 'should resolve when the ajax response resolves', ->
       @resolve(items: [{ title: 'a document' }])
       expect(@promise.isPending()).to.be.false
-      expect(@promise.value()).to.deep.eq([{ title: 'a document' }])
+      expect(@promise.value()).to.deep.eq(items: [{ title: 'a document' }])
 
     it 'should reject when the ajax response rejects', ->
       @reject('an xhr')
