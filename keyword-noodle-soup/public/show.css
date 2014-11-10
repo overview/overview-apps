@@ -1,0 +1,17 @@
+html, body, #app, svg {
+  overflow: hidden;
+  width: 100%;
+  height: 100%;
+  padding: 0;
+  margin: 0;
+}
+
+.link {
+  stroke: #aaa;
+}
+
+text {
+  alignment-baseline: middle;
+  text-anchor: middle;
+  cursor: pointer;
+}
