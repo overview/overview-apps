@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Keyword stack</title>
+    <style>
+    </style>
+  </head>
+  <body>
+    <div id="app">
+      <h1>Loading...</h1>
+    </div>
+    <script src="underscore.js"></script>
+    <script src="jquery-2.1.1.js"></script>
+    <script>
+// Find queryString.server, queryString.documentSetId, queryString.apiToken
+var queryString = window.location.search
+  .replace(/^\?/, '')
+  .split('&')
+  .reduce(function(ret, param) {
+    var parts = param.replace(/\+/g, ' ').split('=');
+    var obj = {};
+    obj[parts[0]] = decodeURIComponent(parts[1] || '');
+    return $.extend(obj, ret);
+  }, {});
+
+// API endpoint: /api/v1/document-sets/:dsid/documents?fields=id,keywords&stream=true
+var url = queryString.server + '/api/v1/document-sets/'
+  + queryString.documentSetId + '/documents?fields=id,keywords&stream=true';
+
+// With jQuery.ajax(), we need to set an 'Authorization' header.
+//
+// (jQuery lets you set `username` and `password` options, but jQuery only sends
+// them when the server prompts; the Overview server won't prompt.
+$.ajax({
+  url: url,
+  headers: {
+    'Authorization': 'Basic ' + btoa(queryString.apiToken + ':x-auth-token')
+  },
+  success: function(json) {
+    showBestKeywords(json.items);
+  }
+});
+
+// Show a <ul> with an <li> per keyword
+function showBestKeywords(documents) {
+  var keywords = _.chain(documents)
+    .pluck('keywords')    // Array of keyword Arrays
+    .flatten(true)        // Array of keywords, with duplicates
+    .countBy(_.identity)  // Object of { keyword => nDocuments }
+    .pairs()              // Array of [ keyword, nDocuments ]
+    .sortBy(function(pair) { return -pair[1]; }) // descending order
+    .first(100)           // Array of [keyword, nDocuments ]
+    .value();
+
+  var html = _.template('<ul><% keywords.forEach(function(keyword) { %><li><a href="#" data-keyword="<%- keyword[0] %>"><%- keyword[0] %> (<%- keyword[1] %>)</a></li><% }); %></ul>')
+    ({ keywords: keywords });
+
+  $('#app').html(html);
+
+  $('#app').on('click', '[data-keyword]', function(e) {
+    e.preventDefault();
+    var keyword = e.currentTarget.getAttribute('data-keyword');
+    window.parent.postMessage({
+      call: 'setDocumentListParams',
+      args: [ { q: keyword, name: 'with keyword ' + keyword }]
+    }, queryString.server);
+  });
+}
+    </script>
+  </body>
+</html>
