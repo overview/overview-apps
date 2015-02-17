@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Test</title>
+  </head>
+  <body>
+    <p>This demonstrates how to set and receive <tt>documentListParams</tt> from within a plugin.</p>
+    <p>If your plugin wants to <em>set</em> <tt>documentListParams</tt>, it need only call <tt>postMessage()</tt>.</p>
+    <p>If your plugin wants to <em>respond</em> to <tt>documentListParams</tt> from the rest of the page, it must:</p>
+    <ul>
+      <li>Call <tt>window.addEventListener("message", ..., false)</tt></li>
+      <li>Verify, for each message, that <tt>message.origin</tt> is the same as the <tt>server</tt> in <tt>window.location.search</tt>, and abort if it isn't</li>
+      <li>Call <tt>window.parent.postMessage({ call: "notifyDocumentListParams" })</tt> to request the initial value (which may have been set before the plugin was loaded)</li>
+      <li>Do nothing until a first <tt>notify:documentListParams</tt> message arrives</li>
+    </ul>
+    <p>Note that there are race conditions. The first <tt>notify:documentListParams</tt> you receive may not correspond to your first call to <tt>notifyDocumentListParams</tt>. The guarantee is, "after you call <tt>notifyDocumentListParams</tt> you will eventually receive the most up-to-date <tt>documentListParams</tt>."
+    <p><button id="set-sample-params">Set a sample <tt>documentListParams</tt> from this plugin</button></p>
+    <p>Debug output (view source for template code):</p>
+    <pre id="output"></pre>
+    <script>
+      var randomWords = [ 'adam', 'wrote', 'this', 'set', 'of', 'search', 'terms', 'so', 'you', 'can', 'pick', 'a', 'random', 'one' ];
+      var server = decodeURIComponent(/server=([^&]+)/.exec(window.location.search)[1]);
+      var params = null;
+
+      function log(s) {
+        document.getElementById("output")
+          .appendChild(document.createTextNode(s + "\n"));
+      }
+
+      function receiveMessage(ev) {
+        if (ev.origin != server) throw new Error("Invalid origin for message: " + ev.origin); // security
+
+        if (ev.data.event == "notify:documentListParams" && ev.data.args && ev.data.args.length == 1) {
+          var first = (params === null);
+          params = ev.data.args[0];
+          if (first) receiveFirstSelection(params);
+          receiveSelection(params);
+        } else {
+          log("Received message we will ignore: " + JSON.stringify(ev.data));
+        }
+      }
+
+      function receiveFirstSelection(params) {
+        log("Received INITIAL params: '" + params + "'");
+      }
+
+      function receiveSelection(params) {
+        log("Received params (initial or otherwise): '" + params + "'");
+      }
+
+      function setSampleParams() {
+        var q = randomWords[Math.floor(Math.random() * randomWords.length)];
+        log("Calling setDocumentListParams with " + JSON.stringify({ q: q }));
+        window.parent.postMessage({
+          call: "setDocumentListParams",
+          args: [ { q: q } ]
+        }, server);
+      }
+
+      window.addEventListener("message", receiveMessage, false);
+      document.getElementById("set-sample-params").addEventListener("click", setSampleParams, false);
+
+      log("Requesting documentListParams... (we don't know it yet)");
+      window.parent.postMessage({ call: "notifyDocumentListParams" }, server);
+    </script>
+  </body>
+</html>
