@@ -17,7 +17,7 @@ class StoreObjectsItemView extends Marionette.ItemView
     objectId = e.target.getAttribute('data-store-object-id')
     window.parent.postMessage({
       call: 'setDocumentListParams'
-      args: [ { objects: [ objectId ], name: @model.attributes.json.name } ]
+      args: [ { objects: [ objectId ], title: "%s in #{@model.attributes.json.name}" } ]
     }, global.server)
 
 class StoreObjectsEmptyView extends Marionette.ItemView
