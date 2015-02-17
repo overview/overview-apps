@@ -77,7 +77,7 @@ function showKeywords(keywords, links) {
 
     window.parent.postMessage({
       call: 'setDocumentListParams',
-      args: [ { q: q , name: 'with keyword ' + keyword } ]
+      args: [ { q: q } ]
     }, queryString.server);
   });
 }
