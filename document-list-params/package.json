@@ -1,7 +1,7 @@
 {
-  "name": "test-selection",
+  "name": "document-list-params",
   "version": "1.0.0",
-  "description": "Shows and changes the current selection",
+  "description": "Shows and changes the document list parameters",
   "main": "server.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
