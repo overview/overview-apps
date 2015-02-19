@@ -1,7 +1,7 @@
-Keyword stack
-=============
+Keyword Noodle Soup
+===================
 
-Displays the most common keywords and how often they link together.
+Displays the most common keywords in a co-occurence graph.
 
 This is intended as a demo. We don't know if the view is useful. Keywords are
 just the top five words per document, decided by TF/IDF vectors. The fact that
